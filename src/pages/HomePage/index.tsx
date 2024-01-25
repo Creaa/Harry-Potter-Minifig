@@ -21,6 +21,7 @@ import { useGlobal } from '../../context';
 import { NavigationProp } from '@react-navigation/native';
 import SectionContainer from '../../common/components/SectionContainer';
 import { IMAGE_PLACEHOLDER_LINK } from '../../common/constant';
+import { MINIFIG_DRAW_NUMBER } from '@env';
 
 interface HomeScreenProps {
   navigation: NavigationProp<any, any>;
@@ -33,7 +34,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [minifigsList, setMinifigsList] = useState<LegoMinifig[] | undefined>([]);
   const [selectedMinifigUrl, setSelectedMinifigUrl] = useState<string | undefined>();
   const [selectedMinifigIndex, setSelectedMinifingIndex] = useState<number | undefined>();
-  const drawNumber = 20;
+  const drawNumber = MINIFIG_DRAW_NUMBER || 5;
 
   useQuery<any>(
     'minifig-list-pagination',
