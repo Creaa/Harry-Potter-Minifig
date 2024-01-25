@@ -48,3 +48,8 @@ Before running the application, ensure that you have the following software inst
 2. Use the Rebrickable API to select a random minifigure.
 3. Fill out the form for shipping details.
 4. Submit the form to see a summary modal with your chosen selections.
+
+## Tested on:
+
+- **Iphone X and above**
+- **Pixel 4**
