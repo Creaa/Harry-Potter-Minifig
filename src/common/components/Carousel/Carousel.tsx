@@ -70,8 +70,8 @@ const carouselElementStyles = (isActive: boolean) =>
               shadowRadius: 18,
             },
             android: {
-              elevation: 10,
-              backgroundColor: '#FF8B2C',
+              shadowColor: '#FF8B2C',
+              elevation: 20, // changed to a greater value
             },
           })
         : {}),
