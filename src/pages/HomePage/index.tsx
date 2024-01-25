@@ -24,19 +24,19 @@ import { IMAGE_PLACEHOLDER_LINK } from '../../common/constant';
 import { MINIFIG_DRAW_NUMBER } from '@env';
 
 interface HomeScreenProps {
-  navigation: NavigationProp<any, any>;
+  navigation: NavigationProp<any, 'PersonalDetails'>;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { minifigRepository } = useRepository();
-  const { setChoosenMinifig } = useGlobal();
+  const { setChosenMinifig } = useGlobal();
   const [itemsCount, setItemsCount] = useState<number | undefined>();
   const [minifigsList, setMinifigsList] = useState<LegoMinifig[] | undefined>([]);
   const [selectedMinifigUrl, setSelectedMinifigUrl] = useState<string | undefined>();
-  const [selectedMinifigIndex, setSelectedMinifingIndex] = useState<number | undefined>();
+  const [selectedMinifigIndex, setSelectedMinifigIndex] = useState<number | undefined>();
   const drawNumber = MINIFIG_DRAW_NUMBER || 5;
 
-  useQuery<any>(
+  useQuery(
     'minifig-list-pagination',
     () => minifigRepository.getMinifigList({ in_theme_id: '246', page: 1, page_size: 1 }),
     {
@@ -55,7 +55,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     () =>
       minifigRepository.getMinifigList({
         in_theme_id: '246',
-        ...calculateListParametersToRandomDraw(itemsCount || 0, drawNumber),
+        ...calculateListParametersToRandomDraw(itemsCount || 0, Number(drawNumber)),
       }),
     {
       enabled: Boolean(itemsCount !== undefined),
@@ -63,7 +63,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       onSuccess: (data: ILegoMinifigList) => {
         const array = data.results;
         if (array.length > drawNumber) {
-          const arr = [...array].sort(() => Math.random() - 0.5).slice(0, drawNumber);
+          const arr = [...array].sort(() => Math.random() - 0.5).slice(0, Number(drawNumber));
 
           setMinifigsList(arr);
         } else {
@@ -77,7 +77,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const renderItem = ({ item, index }: { item: LegoMinifig; index: number }) => {
     return (
-      <Pressable style={{ height: '100%' }} onPress={() => setSelectedMinifingIndex(index)}>
+      <Pressable style={{ height: '100%' }} onPress={() => setSelectedMinifigIndex(index)}>
         <View style={carouselElement.imageContainer}>
           <Image
             style={carouselElement.image}
@@ -119,9 +119,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   title="CHOOSE FIGURE"
                   disabled={selectedMinifigIndex === undefined}
                   onPress={() => {
-                    selectedMinifigIndex !== undefined &&
-                      setChoosenMinifig(minifigsList[selectedMinifigIndex]);
-                    navigation.navigate('Form');
+                    if (minifigsList && selectedMinifigIndex !== undefined) {
+                      setChosenMinifig(minifigsList[selectedMinifigIndex]);
+                      navigation.navigate('PersonalDetails' as never);
+                    }
                   }}
                 />
               </View>

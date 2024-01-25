@@ -3,29 +3,29 @@ import { LegoMinifig } from '../common/interfaces/Api';
 import { IPersonalDetails } from '../common/interfaces/Common';
 
 interface MinifigContext {
-  choosenMinifig: LegoMinifig | null;
+  chosenMinifig: LegoMinifig | null;
   personalDetails: IPersonalDetails | null;
 }
 
 interface GlobalContextProps {
   state: MinifigContext;
-  setChoosenMinifig: (minifig: LegoMinifig | null) => void;
+  setChosenMinifig: (minifig: LegoMinifig | null) => void;
   setPersonalDetails: (details: IPersonalDetails | null) => void;
 }
 
-const initialState: MinifigContext = { choosenMinifig: null, personalDetails: null };
+const initialState: MinifigContext = { chosenMinifig: null, personalDetails: null };
 
 const GlobalContext = createContext<GlobalContextProps>({
   state: initialState,
-  setChoosenMinifig: () => {},
+  setChosenMinifig: () => {},
   setPersonalDetails: () => {},
 });
 
 const GlobalProvider: FC<any> = ({ children }) => {
   const [state, setState] = useState<MinifigContext>(initialState);
 
-  const setChoosenMinifig = (minifig: LegoMinifig | null) => {
-    setState((prevState) => ({ ...prevState, choosenMinifig: minifig }));
+  const setChosenMinifig = (minifig: LegoMinifig | null) => {
+    setState((prevState) => ({ ...prevState, chosenMinifig: minifig }));
   };
 
   const setPersonalDetails = (details: IPersonalDetails | null) => {
@@ -33,7 +33,7 @@ const GlobalProvider: FC<any> = ({ children }) => {
   };
 
   return (
-    <GlobalContext.Provider value={{ state, setChoosenMinifig, setPersonalDetails }}>
+    <GlobalContext.Provider value={{ state, setChosenMinifig, setPersonalDetails }}>
       {children}
     </GlobalContext.Provider>
   );

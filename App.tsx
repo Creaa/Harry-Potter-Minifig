@@ -32,7 +32,7 @@ function App() {
             <RepositoryProvider axios={axiosInstance}>
               <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Home" component={HomeScreen} />
-                <Stack.Screen name="Form" component={PersonalDetailsPage} />
+                <Stack.Screen name="PersonalDetails" component={PersonalDetailsPage} />
               </Stack.Navigator>
             </RepositoryProvider>
           </GlobalProvider>

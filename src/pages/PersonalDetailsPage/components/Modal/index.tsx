@@ -15,7 +15,7 @@ import Button from '../../../../common/components/Button/Button';
 import { IMAGE_PLACEHOLDER_LINK } from '../../../../common/constant';
 
 interface IModalProps {
-  choosenMinifig: LegoMinifig;
+  chosenMinifig: LegoMinifig;
   minifigPartsList: ILegoPartsListData;
   isOpen: boolean;
   onClose: () => void;
@@ -23,7 +23,7 @@ interface IModalProps {
 }
 
 const Modal: FC<IModalProps> = ({
-  choosenMinifig,
+                                  chosenMinifig,
   minifigPartsList,
   isOpen,
   onClose,
@@ -44,9 +44,9 @@ const Modal: FC<IModalProps> = ({
               <View style={styles.minifigPreviewContainer}>
                 <Image
                   style={styles.image}
-                  source={{ uri: choosenMinifig.set_img_url || IMAGE_PLACEHOLDER_LINK }}
+                  source={{ uri: chosenMinifig.set_img_url || IMAGE_PLACEHOLDER_LINK }}
                 />
-                <Text style={styles.minifigName}>{choosenMinifig.name}</Text>
+                <Text style={styles.minifigName}>{chosenMinifig.name}</Text>
               </View>
             </View>
             <Text style={styles.partsTitle}>

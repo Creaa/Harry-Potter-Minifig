@@ -24,13 +24,13 @@ const PersonalDetailsPage: FC<FormProps> = ({ navigation }) => {
 
   const sendMinifigOrderMutation = useMutation(
     () => {
-      if (!state.personalDetails || !state.choosenMinifig) {
-        return Promise.reject(new Error('Missing personal details or choosenMinifig'));
+      if (!state.personalDetails || !state.chosenMinifig) {
+        return Promise.reject(new Error('Missing personal details or chosenMinifig'));
       }
 
       const payload: IMinifigOrderPayload = {
         ...(state.personalDetails && { shipping_details: state.personalDetails }),
-        ...(state.choosenMinifig && { minifig_id: state.choosenMinifig.set_num }),
+        ...(state.chosenMinifig && { minifig_id: state.chosenMinifig.set_num }),
       };
 
       return minifigRepository.sendMinifigOrder(payload);
@@ -39,7 +39,7 @@ const PersonalDetailsPage: FC<FormProps> = ({ navigation }) => {
       onSuccess: () => {
         const payload = {
           ...(state.personalDetails && { shipping_details: state.personalDetails }),
-          ...(state.choosenMinifig && { minifig_id: state.choosenMinifig.set_num }),
+          ...(state.chosenMinifig && { minifig_id: state.chosenMinifig.set_num }),
         };
 
         Alert.alert('Request has been sent. Payload:', JSON.stringify(payload));
@@ -48,7 +48,7 @@ const PersonalDetailsPage: FC<FormProps> = ({ navigation }) => {
       onError: () => {
         const payload = {
           ...(state.personalDetails && { shipping_details: state.personalDetails }),
-          ...(state.choosenMinifig && { minifig_id: state.choosenMinifig.set_num }),
+          ...(state.chosenMinifig && { minifig_id: state.chosenMinifig.set_num }),
         };
 
         Alert.alert('Request has been sent. Payload:', JSON.stringify(payload));
@@ -57,11 +57,11 @@ const PersonalDetailsPage: FC<FormProps> = ({ navigation }) => {
   );
 
   useQuery(
-    `minifig-parts-list-${state.choosenMinifig?.set_num}`,
-    () => minifigRepository.getMinifigPartsList(state.choosenMinifig?.set_num || ''),
+    `minifig-parts-list-${state.chosenMinifig?.set_num}`,
+    () => minifigRepository.getMinifigPartsList(state.chosenMinifig?.set_num || ''),
     {
       refetchOnWindowFocus: false,
-      enabled: Boolean(state.choosenMinifig),
+      enabled: Boolean(state.chosenMinifig),
       onSuccess: (data: ILegoPartsListData) => {
         setMinifigPartsList(data);
       },
@@ -73,11 +73,11 @@ const PersonalDetailsPage: FC<FormProps> = ({ navigation }) => {
   );
 
   useEffect(() => {
-    if (!state.choosenMinifig) {
+    if (!state.chosenMinifig) {
       Alert.alert('No minifig found');
       navigation?.navigate('Home');
     }
-  }, [state.choosenMinifig, navigation]);
+  }, [state.chosenMinifig, navigation]);
 
   return (
     <SectionContainer title="PERSONAL DETAILS">
@@ -89,11 +89,11 @@ const PersonalDetailsPage: FC<FormProps> = ({ navigation }) => {
             setIsModalOpen(true);
           }}
         />
-        {state.choosenMinifig && minifigPartsList ? (
+        {state.chosenMinifig && minifigPartsList ? (
           <Modal
             isOpen={isModalOpen}
             minifigPartsList={minifigPartsList}
-            choosenMinifig={state.choosenMinifig}
+            chosenMinifig={state.chosenMinifig}
             onClose={() => setIsModalOpen(false)}
             onModalSubmit={() => sendMinifigOrderMutation.mutate()}
           />
