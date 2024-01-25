@@ -58,7 +58,7 @@ const Form: FC<FormProps> = ({ onSubmit, initialState }) => {
         }
       }
       validateOnMount={true}
-      onSubmit={(values) => onSubmit(values)}
+      onSubmit={(values: IPersonalDetails) => onSubmit(values)}
     >
       {({ handleChange, handleSubmit, values, errors }) => (
         <ScrollView

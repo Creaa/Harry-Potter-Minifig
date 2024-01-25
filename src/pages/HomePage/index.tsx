@@ -6,6 +6,7 @@ import {
   Image,
   ActivityIndicator,
   Pressable,
+  StatusBar,
 } from 'react-native';
 import * as React from 'react';
 import { useRepository } from '../../context/repository.context';
@@ -75,7 +76,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const renderItem = ({ item, index }: { item: LegoMinifig; index: number }) => {
     return (
-      <Pressable onPress={() => setSelectedMinifingIndex(index)}>
+      <Pressable style={{ height: '100%' }} onPress={() => setSelectedMinifingIndex(index)}>
         <View style={carouselElement.imageContainer}>
           <Image
             style={carouselElement.image}
@@ -94,6 +95,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <>
+      <StatusBar backgroundColor="blue" barStyle="light-content" />
       {selectedMinifigUrl ? (
         <SafeAreaView style={styles.webViewSafeArea}>
           <Webview

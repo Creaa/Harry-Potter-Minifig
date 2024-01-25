@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { StyleSheet, View, Platform } from 'react-native';
+import { StyleSheet, View, Platform, Dimensions } from 'react-native';
 import { default as SnapCarousel } from 'react-native-snap-carousel';
 import * as Animatable from 'react-native-animatable';
 import { LegoMinifig } from '../../interfaces/Api';
@@ -30,9 +30,10 @@ const Carousel: FC<CarouselProps> = ({ list, carouselItem, activeIndex }) => {
     <View style={styles.container}>
       <SnapCarousel
         layout={'default'}
-        data={list}
-        sliderWidth={380}
+        data={list as FlatArray<any, any>}
+        sliderWidth={Dimensions.get('window').width}
         itemWidth={260}
+        removeClippedSubviews={false}
         renderItem={renderItem}
       />
     </View>
@@ -54,7 +55,7 @@ const carouselElementStyles = (isActive: boolean) =>
       paddingTop: 20,
       paddingLeft: 10,
       paddingRight: 10,
-      paddingBottom: 40,
+      marginBottom: 40,
       marginTop: 50,
       marginLeft: 10,
       marginRight: 10,
