@@ -8,7 +8,7 @@ This React Native application utilizes Expo to create a fun and interactive expe
 
 Before running the application, ensure that you have the following software installed:
 
-- **Node.js:** v18.9.0
+- **Node:** v18.9.0
 - **npm:** v8.19.1
 - **Expo:** v0.17.1
 
