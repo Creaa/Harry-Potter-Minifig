@@ -23,7 +23,7 @@ interface IModalProps {
 }
 
 const Modal: FC<IModalProps> = ({
-                                  chosenMinifig,
+  chosenMinifig,
   minifigPartsList,
   isOpen,
   onClose,
