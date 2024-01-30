@@ -10,6 +10,7 @@ import { useRepository } from '../../context/repository.context';
 import { useMutation, useQuery } from 'react-query';
 import { ILegoPartsListData, IMinifigOrderPayload } from '../../common/interfaces/Api';
 import cloneDeep from 'lodash/cloneDeep';
+import { MINIFIG_PARTS_LIST_QUERY_KEY } from '../../common/constant/queryKeys';
 
 interface FormProps {
   navigation: NavigationProp<any, any>;
@@ -57,7 +58,7 @@ const PersonalDetailsPage: FC<FormProps> = ({ navigation }) => {
   );
 
   useQuery(
-    `minifig-parts-list-${state.chosenMinifig?.set_num}`,
+    `${MINIFIG_PARTS_LIST_QUERY_KEY}-${state.chosenMinifig?.set_num}`,
     () => minifigRepository.getMinifigPartsList(state.chosenMinifig?.set_num || ''),
     {
       refetchOnWindowFocus: false,
@@ -79,6 +80,14 @@ const PersonalDetailsPage: FC<FormProps> = ({ navigation }) => {
     }
   }, [state.chosenMinifig, navigation]);
 
+  const modalSubmitHandler = () => {
+    sendMinifigOrderMutation.mutate();
+  };
+
+  const modalCloseHandler = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <SectionContainer title="PERSONAL DETAILS">
       <>
@@ -94,8 +103,8 @@ const PersonalDetailsPage: FC<FormProps> = ({ navigation }) => {
             isOpen={isModalOpen}
             minifigPartsList={minifigPartsList}
             chosenMinifig={state.chosenMinifig}
-            onClose={() => setIsModalOpen(false)}
-            onModalSubmit={() => sendMinifigOrderMutation.mutate()}
+            onClose={modalCloseHandler}
+            onModalSubmit={modalSubmitHandler}
           />
         ) : null}
       </>

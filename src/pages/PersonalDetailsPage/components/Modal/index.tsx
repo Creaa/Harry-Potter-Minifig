@@ -54,7 +54,7 @@ const Modal: FC<IModalProps> = ({
             </Text>
             <ScrollView>
               {minifigPartsList.results.map((minifigPart) => (
-                <View key={minifigPart.element_id} style={styles.partElementContainer}>
+                <View key={minifigPart.inv_part_id} style={styles.partElementContainer}>
                   <Image
                     style={styles.partImage}
                     source={{ uri: minifigPart.part.part_img_url || IMAGE_PLACEHOLDER_LINK }}

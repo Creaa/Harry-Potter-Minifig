@@ -8,13 +8,16 @@ import {
   useFonts,
 } from '@expo-google-fonts/changa-one';
 import { RepositoryProvider } from './src/context/repository.context';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
 import axiosInstance from './src/common/utils/axios';
 import { GlobalProvider } from './src/context';
 import PersonalDetailsPage from './src/pages/PersonalDetailsPage';
+import { ActivityIndicator } from 'react-native';
+import AXIOS_CONFIG from './src/common/constant/axiosConfig';
 
 const Stack = createNativeStackNavigator();
-const queryClient = new QueryClient();
+const cache = new QueryCache(AXIOS_CONFIG);
+const queryClient = new QueryClient({ queryCache: cache });
 
 function App() {
   let [fontsLoaded] = useFonts({
@@ -23,7 +26,7 @@ function App() {
   });
 
   if (!fontsLoaded) {
-    return '';
+    return <ActivityIndicator />;
   } else {
     return (
       <NavigationContainer>

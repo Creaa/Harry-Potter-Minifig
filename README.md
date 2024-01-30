@@ -4,6 +4,31 @@
 
 This React Native application utilizes Expo to create a fun and interactive experience for Harry Potter fans. The app allows users to select random Harry Potter minifigures using the Rebrickable API. Users can then fill out a form to customize their minifigure, and finally, view a summary modal with their chosen selections.
 
+## Used Stack
+
+- **React Native**: JavaScript framework for building mobile applications.
+- **Expo**: Development platform for building mobile apps with React Native.
+- **React Navigation**: Routing and navigation library for React Native apps.
+- **Formik**: Form library for React and React Native.
+- **Axios**: Promise-based HTTP client for the browser and Node.js.
+- **Lodash**: JavaScript utility library for manipulating arrays, objects, and strings.
+- **React Native Animatable**: Declarative animations library for React Native.
+- **React Native Dotenv**: Environment variables for React Native apps.
+- **React Native Gesture Handler**: Gesture management library for React Native.
+- **React Native Snap Carousel**: Swiper/carousel component for React Native.
+- **React Native SVG**: SVG library for React Native.
+- **React Native WebView**: React Native component for rendering web content.
+
+### Tools
+
+- **ESLint**: JavaScript linter tool.
+- **Prettier**: Opinionated code formatter.
+- **TypeScript**: Typed superset of JavaScript that compiles to plain JavaScript.
+
+### Other
+
+- **Changa One Font**: Google font used in the project.
+
 ## Prerequisites
 
 Before running the application, ensure that you have the following software installed:
@@ -53,3 +78,24 @@ Before running the application, ensure that you have the following software inst
 
 - **Iphone X and above**
 - **Pixel 4**
+
+## Fixes: 
+
+> react-query has global onError callback that can be used instead of copy-pasting the same console.log (https://tanstack.com/query/v4/docs/reference/QueryCache#global-callbacks)
+
+I used QueryCache to provide default onError handling. 
+
+> Query keys could be extracted somewhere as right now it's easy to make typo and TSC won't see it
+
+Query keys have been extracted to separate file as const.
+
+> Returning empty string in components can easily go wrong (can't render string outside of Text component)
+
+Since it's font loader instead empty string I used loader indicator.  
+
+> There are couple of places with inline functions which should be generally avoided in RN (even more than on web) as it can degrade performance in case of bigger components
+
+Inline functions have been replaced.
+
+
+

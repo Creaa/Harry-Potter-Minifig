@@ -22,6 +22,10 @@ import { NavigationProp } from '@react-navigation/native';
 import SectionContainer from '../../common/components/SectionContainer';
 import { IMAGE_PLACEHOLDER_LINK } from '../../common/constant';
 import { MINIFIG_DRAW_NUMBER } from '@env';
+import {
+  MINIFIG_LIST_PAGINATION_QUERY_KEY,
+  MINIFIG_LIST_RANDOM_SELECTION_QUERY_KEY,
+} from '../../common/constant/queryKeys';
 
 interface HomeScreenProps {
   navigation: NavigationProp<any, 'PersonalDetails'>;
@@ -37,21 +41,18 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const drawNumber = MINIFIG_DRAW_NUMBER || 5;
 
   useQuery(
-    'minifig-list-pagination',
+    MINIFIG_LIST_PAGINATION_QUERY_KEY,
     () => minifigRepository.getMinifigList({ in_theme_id: '246', page: 1, page_size: 1 }),
     {
       refetchOnWindowFocus: false,
       onSuccess: (data: ILegoMinifigList) => {
         setItemsCount(data.count);
       },
-      onError: (error) => {
-        console.log('Erro occured:', JSON.stringify(error));
-      },
     },
   );
 
   const { isLoading } = useQuery<ILegoMinifigList>(
-    'minifig-list-random-selection',
+    MINIFIG_LIST_RANDOM_SELECTION_QUERY_KEY,
     () =>
       minifigRepository.getMinifigList({
         in_theme_id: '246',
@@ -76,8 +77,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // if it's reusable I would move it to @components with custom props
 
   const renderItem = ({ item, index }: { item: LegoMinifig; index: number }) => {
+    const onItemPress = () => {
+      setSelectedMinifigIndex(index);
+    };
+
+    const onMinifigUrlSelection = () => {
+      setSelectedMinifigUrl(item.set_url);
+    };
+
     return (
-      <Pressable style={{ height: '100%' }} onPress={() => setSelectedMinifigIndex(index)}>
+      <Pressable style={{ height: '100%' }} onPress={onItemPress}>
         <View style={carouselElement.imageContainer}>
           <Image
             style={carouselElement.image}
@@ -87,11 +96,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           />
         </View>
         <Text style={carouselElement.title}>{item.name}</Text>
-        <Pressable onPress={() => setSelectedMinifigUrl(item.set_url)}>
+        <Pressable onPress={onMinifigUrlSelection}>
           <Text style={carouselElement.link}>Show details</Text>
         </Pressable>
       </Pressable>
     );
+  };
+
+  const onConfirmButtonPress = () => {
+    if (minifigsList && selectedMinifigIndex !== undefined) {
+      setChosenMinifig(minifigsList[selectedMinifigIndex]);
+      navigation.navigate('PersonalDetails' as never);
+    }
+  };
+
+  const onWebViewClose = () => {
+    setSelectedMinifigUrl(undefined);
   };
 
   return (
@@ -99,10 +119,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       <StatusBar backgroundColor="blue" barStyle="light-content" />
       {selectedMinifigUrl ? (
         <SafeAreaView style={styles.webViewSafeArea}>
-          <Webview
-            url={selectedMinifigUrl}
-            onCloseHandler={() => setSelectedMinifigUrl(undefined)}
-          />
+          <Webview url={selectedMinifigUrl} onCloseHandler={onWebViewClose} />
         </SafeAreaView>
       ) : null}
       <SectionContainer title="CHOOSE YOUR MINIFIG">
@@ -118,12 +135,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 <Button
                   title="CHOOSE FIGURE"
                   disabled={selectedMinifigIndex === undefined}
-                  onPress={() => {
-                    if (minifigsList && selectedMinifigIndex !== undefined) {
-                      setChosenMinifig(minifigsList[selectedMinifigIndex]);
-                      navigation.navigate('PersonalDetails' as never);
-                    }
-                  }}
+                  onPress={onConfirmButtonPress}
                 />
               </View>
             </>
