@@ -79,23 +79,45 @@ Before running the application, ensure that you have the following software inst
 - **Iphone X and above**
 - **Pixel 4**
 
-## Fixes: 
 
-> react-query has global onError callback that can be used instead of copy-pasting the same console.log (https://tanstack.com/query/v4/docs/reference/QueryCache#global-callbacks)
+# Background
 
-I used QueryCache to provide default onError handling. 
+This is my first React Native project. Having experience with React, I wanted to see how challenging it would be to transition to a React Native project, what similarities there are, what obstacles I might encounter, and what problems I might face.
 
-> Query keys could be extracted somewhere as right now it's easy to make typo and TSC won't see it
+During the application development, I encountered the most issues with setting up the project and the fact that instead of JSX, native components are used. This required reading documentation and slowly adapting to the new coding style.
 
-Query keys have been extracted to separate file as const.
+Another significant challenge was connecting to the API in the most optimal way. The task involved fetching random figures (minifigs), and I wanted to do it in the most optimal way possible.
 
-> Returning empty string in components can easily go wrong (can't render string outside of Text component)
+The Rebrickable API accepts 2 parameters: page and page_limit. It was essential for me that each figure had an equal chance of being selected randomly, and that the application user received as many figures as requested.
 
-Since it's font loader instead empty string I used loader indicator.  
+Therefore, I wrote a simple algorithm to calculate at which modulo the situation would occur where we would get an equal number of pagination pages, with the number of figures the user expects. The advantage of this solution is that we make only one connection to the API. The downside is that the figures are selected in sets, not individually.
 
-> There are couple of places with inline functions which should be generally avoided in RN (even more than on web) as it can degrade performance in case of bigger components
+For example, if a user wants to fetch 5 figures out of 20, the algorithm adjusts the page and page_limit parameters. It divides the 20 figures into 4 pages of 5 each and randomly selects which page to fetch from.
 
-Inline functions have been replaced.
+So when selecting figures, there is no possibility for figures from the first and last index positions to appear for selection. However, it's a matter of approach in how we define "random," as the chance of selecting a particular figure remains the same.
+
+In the case where we have a number that does not divide evenly, the algorithm checks at which number of figures we will receive pages with the same number of figures while maintaining the condition that the number of figures must not be less than what the user wants. With a larger amount of data, this could be a disadvantage, but with this specific API, it shouldn't affect performance.
+
+In summary, it was a really interesting task from which I gained a lot of new knowledge about React Native. Much of the code was familiar to me from React projects, but there are still many small, subtle differences between these two tools that slightly extended the development time. I definitely want to continue learning React Native and look forward to new challenges.
+
+
+## Review:
+
+During the review, attention was drawn to the following issues: 
+
+1. **Global Error Handling with `react-query`**:
+   - Utilized the global `onError` callback feature provided by `react-query` through `QueryCache` to handle errors consistently throughout the application. This approach eliminates the need for redundant `console.log` statements. Refer to the [documentation on global callbacks](https://tanstack.com/query/v4/docs/reference/QueryCache#global-callbacks) for more details.
+
+2. **Query Keys Organization**:
+   - Extracted query keys to a separate file to enhance code organization, reduce the likelihood of typos, and ensure better compatibility with TypeScript.
+
+3. **Handling Empty Strings in Components**:
+   - Replaced instances of returning empty strings in components with loader indicators to avoid potential rendering issues. This adjustment is particularly important in React Native, where rendering strings outside of a `Text` component can lead to errors.
+
+4. **Avoidance of Inline Functions**:
+   - Replaced inline functions in several places to adhere to best practices in React Native development. Inline functions, especially in larger components, can impact performance negatively, hence their removal improves code maintainability and performance.
+
+These fixes enhance the readability, maintainability, and performance of the codebase, addressing key concerns identified during the review process.
 
 
 
