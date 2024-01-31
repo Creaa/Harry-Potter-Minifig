@@ -26,9 +26,16 @@ import {
   MINIFIG_LIST_PAGINATION_QUERY_KEY,
   MINIFIG_LIST_RANDOM_SELECTION_QUERY_KEY,
 } from '../../common/constant/queryKeys';
+import ScanScreen from '../../common/components/QRCamera';
+import { BarCodeScanningResult } from 'expo-camera';
 
 interface HomeScreenProps {
   navigation: NavigationProp<any, 'PersonalDetails'>;
+}
+
+enum SelectionMode {
+  Draw = 'draw',
+  Scan = 'scan',
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
@@ -38,6 +45,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [minifigsList, setMinifigsList] = useState<LegoMinifig[] | undefined>([]);
   const [selectedMinifigUrl, setSelectedMinifigUrl] = useState<string | undefined>();
   const [selectedMinifigIndex, setSelectedMinifigIndex] = useState<number | undefined>();
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
+  const [selectedMode, setSelectedMode] = useState<SelectionMode>(SelectionMode.Draw);
+  const [scannedMinifigId, setScannedMinifigId] = useState<string | undefined>();
   const drawNumber = MINIFIG_DRAW_NUMBER || 5;
 
   useQuery(
@@ -51,23 +61,28 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     },
   );
 
-  const { isLoading } = useQuery<ILegoMinifigList>(
-    MINIFIG_LIST_RANDOM_SELECTION_QUERY_KEY,
+  const { isFetching, isLoading } = useQuery<ILegoMinifigList>(
+    [MINIFIG_LIST_RANDOM_SELECTION_QUERY_KEY, scannedMinifigId, selectedMode],
     () =>
       minifigRepository.getMinifigList({
         in_theme_id: '246',
-        ...calculateListParametersToRandomDraw(itemsCount || 0, Number(drawNumber)),
+        ...(scannedMinifigId && selectedMode === SelectionMode.Scan
+          ? { search: scannedMinifigId }
+          : calculateListParametersToRandomDraw(itemsCount || 0, Number(drawNumber))),
       }),
     {
       enabled: Boolean(itemsCount !== undefined),
       refetchOnWindowFocus: false,
       onSuccess: (data: ILegoMinifigList) => {
         const array = data.results;
-        if (array.length > drawNumber) {
+        console.log('koko', array.length);
+        console.log('koko', scannedMinifigId);
+        if (selectedMode === SelectionMode.Draw && array.length > Number(drawNumber)) {
           const arr = [...array].sort(() => Math.random() - 0.5).slice(0, Number(drawNumber));
 
           setMinifigsList(arr);
         } else {
+          array.length === 1 && setSelectedMinifigIndex(0);
           setMinifigsList(array);
         }
       },
@@ -114,9 +129,32 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     setSelectedMinifigUrl(undefined);
   };
 
+  const onBarcodeScanned = (code: BarCodeScanningResult) => {
+    setSelectedMode(SelectionMode.Scan);
+    setIsCameraActive(false);
+    setScannedMinifigId(code.data);
+  };
+
+  const setMode = (mode: SelectionMode) => {
+    setSelectedMode(mode);
+    setScannedMinifigId(undefined);
+    setSelectedMinifigIndex(undefined);
+
+    if (mode === SelectionMode.Scan) {
+      setIsCameraActive(true);
+    }
+  };
+
+  const onCameraClose = () => {
+    setIsCameraActive(false);
+  };
+
   return (
     <>
       <StatusBar backgroundColor="blue" barStyle="light-content" />
+      {isCameraActive ? (
+        <ScanScreen onCameraClose={onCameraClose} onBarcodeScanned={onBarcodeScanned} />
+      ) : null}
       {selectedMinifigUrl ? (
         <SafeAreaView style={styles.webViewSafeArea}>
           <Webview url={selectedMinifigUrl} onCloseHandler={onWebViewClose} />
@@ -124,7 +162,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       ) : null}
       <SectionContainer title="CHOOSE YOUR MINIFIG">
         <View style={styles.container}>
-          {minifigsList && !isLoading ? (
+          {minifigsList && !isFetching && !isLoading ? (
             <>
               <Carousel
                 activeIndex={selectedMinifigIndex}
@@ -132,6 +170,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 list={minifigsList}
               />
               <View style={styles.buttonContainer}>
+                {selectedMode === SelectionMode.Draw ? (
+                  <Button
+                    variant="warning"
+                    title="QR CODE"
+                    onPress={() => setIsCameraActive(true)}
+                  />
+                ) : (
+                  <Button
+                    variant="warning"
+                    title="RANDOM"
+                    onPress={() => setMode(SelectionMode.Draw)}
+                  />
+                )}
                 <Button
                   title="CHOOSE FIGURE"
                   disabled={selectedMinifigIndex === undefined}
@@ -164,6 +215,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    rowGap: 20,
   },
 });
 

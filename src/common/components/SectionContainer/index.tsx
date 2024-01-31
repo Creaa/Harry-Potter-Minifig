@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     alignItems: 'center',
     width: '100%',
+    zIndex: 1,
   },
   text: {
     color: '#fff',

@@ -1,8 +1,8 @@
 import { IPersonalDetails } from './Common';
 
 export interface IMinifigListParams {
-  page: number;
-  page_size: number;
+  page?: number;
+  page_size?: number;
   min_parts?: number;
   max_parts?: number;
   in_set_num?: string;

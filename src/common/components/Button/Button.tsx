@@ -7,15 +7,24 @@ interface ButtonProps {
   onPress: () => void;
   title: string;
   disabled?: boolean;
+  variant?: 'submit' | 'warning' | 'danger';
 }
 
-const Button: FC<ButtonProps> = ({ onPress, title, disabled = false }) => {
+const VARIANTS = {
+  ['submit']: '#008EEB',
+  ['warning']: '#f0ad4e',
+  ['danger']: '#d9534f',
+};
+
+const Button: FC<ButtonProps> = ({ onPress, title, disabled = false, variant }) => {
+  const styles = buttonStyles(variant);
+
   return (
     <View>
       <GestureHandlerRootView>
         <TouchableOpacity disabled={disabled} onPress={onPress}>
-          <View style={[buttonStyles.container, disabled && buttonStyles.disabled]}>
-            <Text style={buttonStyles.text}>{title}</Text>
+          <View style={[styles.container, disabled && styles.disabled]}>
+            <Text style={styles.text}>{title}</Text>
           </View>
         </TouchableOpacity>
       </GestureHandlerRootView>
@@ -25,23 +34,24 @@ const Button: FC<ButtonProps> = ({ onPress, title, disabled = false }) => {
 
 export default Button;
 
-const buttonStyles = StyleSheet.create({
-  container: {
-    backgroundColor: '#008EEB',
-    width: 223,
-    height: 46,
-    borderRadius: 61,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  disabled: {
-    backgroundColor: '#CCCCCC',
-  },
-  text: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-});
+const buttonStyles = (variant: ButtonProps['variant']) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: VARIANTS[variant || 'submit'],
+      width: 223,
+      height: 46,
+      borderRadius: 61,
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    disabled: {
+      backgroundColor: '#CCCCCC',
+    },
+    text: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontWeight: '700',
+    },
+  });

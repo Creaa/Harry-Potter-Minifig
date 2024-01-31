@@ -9,8 +9,19 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets."
+      }
     },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "509e186c-f0e1-4a19-af9a-a4ec47d6b371"
